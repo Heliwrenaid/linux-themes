@@ -1,0 +1,87 @@
+#!/bin/bash
+
+disable_bluetooth() {
+    bluetoothctl power off
+}
+
+enable_bluetooth() {
+    bluetoothctl power on
+}
+
+power_status() {
+    # yes / no
+    echo `bluetoothctl show | grep Powered | cut -d ':' -f2 | xargs`
+}
+
+icon() {
+    if [ `power_status` = yes ]; then
+        echo "󰂯"
+    else
+        echo "󰂲"
+    fi
+}
+
+toggle() {
+    if [ `power_status` = yes ]; then
+        disable_bluetooth
+    else
+        enable_bluetooth
+    fi
+}
+
+list_devices() {
+    list=`bluetoothctl devices $1` # [Paired/Bonded/Trusted/Connected]
+    ids=(`echo "$list" | cut -d " " -f2`)
+    devices_string=`echo "$list" | cut -d " " -f3-20`
+    connected_devices_string=`bluetoothctl devices Connected | cut -d " " -f3-20`
+
+    devices=()
+    while IFS= read -r line; do
+        devices+=("$line")
+    done <<< "$devices_string"
+
+    len="${#ids[@]}"
+    let "len=len-1"
+
+    json=('[')
+    for i in `seq 0 $len`; do
+        name=`echo "${devices[$i]}" | xargs`
+
+        if [[ "$connected_devices_string" == *"$name"* ]]; then
+            active='true'
+        else
+            active='false'
+        fi
+
+        comma=","
+        if [ $i -eq $len ]; then
+            comma=""
+        fi
+        json+=("{\"name\": \"$name\", \"id\": \"${ids[$i]}\", \"active\": \"$active\"}$comma")
+    done
+    json+=(']')
+
+    echo "${json[@]}"
+}
+
+connect() {
+    if [ `power_status` = no ]; then
+        enable_bluetooth
+    fi
+    bluetoothctl connect "$1"
+}
+
+disconnect() {
+    bluetoothctl disconnect "$1"
+}
+
+
+[ "$1" = "icon" ] && icon && exit
+[ "$1" = "power-status" ] && power_status && exit
+[ "$1" = "enable" ] && enable_bluetooth && exit
+[ "$1" = "disable" ] && disable_bluetooth && exit
+[ "$1" = "toggle" ] && toggle && exit
+[ "$1" = "list-devices" ] && list_devices "$2" && exit
+[ "$1" = "connect" ] && connect "$2" && exit
+[ "$1" = "disconnect" ] && disconnect "$2" && exit
+

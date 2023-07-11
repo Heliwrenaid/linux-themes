@@ -1,0 +1,250 @@
+(defwindow mybar
+           :monitor 0
+           :geometry (geometry :x "0px"
+                               :y "15px"
+                               :width "100%"
+                               :anchor "top center")
+           :stacking "fg"
+           :exclusive true
+           (bar))
+
+(defwidget bar []
+  (centerbox :orientation "h"
+             :class "bar"
+    (Workspaces)
+    (Timedate)
+    (Right-panel)))
+
+(defpoll volume-icon :interval "1s" "scripts/volume icon")
+(defpoll volume-level :interval "1s" "scripts/volume get")
+(defpoll brightness-icon :interval "1s" "scripts/brightness icon")
+(defpoll brightness-level :interval "1s" "scripts/brightness get-percentage")
+(defwidget Right-panel []
+    (box :orientation "horizontal" 
+         :space-evenly false
+         :halign "end"
+         :spacing 10
+    (Brightness :value brightness-level :label brightness-icon)
+    (Volume :value volume-level :label volume-icon)
+    (Bluetooth)
+    (Wifi)
+    (Battery)
+    (PowerButton)))
+
+
+(defpoll battery-percentage :interval "10s" 
+  "scripts/battery percentage")
+(defpoll battery-icon :interval "30s" 
+  "scripts/battery icon")
+(defpoll battery-status :interval "30s" 
+  "scripts/battery status")
+(defwidget Battery []
+  (box :orientation "h"
+       (box
+          (box :class "battery-icon" battery-icon)
+          (box :class {battery-status == "Charging" ? "battery-charging" : battery-percentage <= 10 ? "battery-low" : ""} 
+              "${battery-percentage}%"))))
+
+(defwidget Volume [label value]
+  (box :space-evenly false
+    (button :class "volume-icon" :onclick "scripts/volume toggle" label)
+    (box :orientation "h"
+        :class "volume"
+          (scale :min 0
+            :max 101
+            :value value
+            :active true
+            :onchange "amixer set Master {}%"
+          )
+    )
+  )
+)
+
+(defwidget Brightness [label value]
+  (box :space-evenly false
+    (label :class "brightness-icon" :text label)
+    (box :orientation "h"
+        :halign "end"
+        :class "brightness"
+        (scale :min 0
+          :max 101
+          :value value
+          :active true
+          :onchange "scripts/brightness set-percentage {}"
+        )
+    )
+  )
+)
+
+(defpoll time :interval "5s"
+  "date '+%H:%M %b %d'")
+(defwidget Timedate []
+  (eventbox :orientation "horizontal"
+       :halign "center"
+       :class "time"
+       :onclick "scripts/widget open mycalendar"
+    time))
+
+(defpoll calendar_day :initial "01" :interval "1m" "date '+%d'")
+(defpoll calendar_year :initial "2023" :interval "12h" "date '+%Y'")
+
+(defwindow mycalendar
+    :monitor 0
+    :geometry (geometry :x "0px"
+                        :y "10px"
+                        :width "270px"
+                        :height "60px"
+                        :anchor "top center")
+    :stacking "overlay"
+    :exclusive false
+    (eventbox :onhoverlost "eww close mycalendar" (Calendar))
+)
+
+(defwidget Calendar []
+	(box :class "cal" :orientation "v"
+	(box :class "cal-in"
+	(calendar :class "cal"))))
+
+(deflisten workspaces :initial "[]" "bash scripts/get-workspaces")
+(deflisten current_workspace :initial "1" "bash scripts/get-active-workspace")
+(defwidget Workspaces [] 
+  (box :halign "start" :spacing 15
+    (label :text "${workspaces}${current_workspace}" :visible false)
+    (for workspace in workspaces
+      (eventbox :onclick "hyprctl dispatch workspace ${workspace.id}" :halign "center" :width 60
+        (box :class "workspace-entry ${workspace.id == current_workspace ? "current" : ""} ${workspace.windows > 0 ? "occupied" : ""}" 
+          (label :text "${workspace.id}")
+        )
+      )
+    )
+  )
+)
+
+;; Dashboard ------------------------------------
+
+(defwindow dashboard
+  :monitor 0
+  :geometry (geometry :x "0px"
+                      :y "0px"
+                      :anchor "center")
+  :stacking "fg"
+  :exclusive true
+  (Dashboard))
+
+(defwidget Dashboard []
+  (box :orientation "h"
+       :halign "center"
+       :class "dashboard"
+    (WifiManager)))
+
+
+;; Wifi -----------------------------------------------------
+
+(defpoll wifi-icon :interval "5s" "scripts/wifi icon")
+(defpoll wifi_name :interval "5s" "scripts/wifi name")
+(defwidget Wifi []
+(box :orientation "h"
+      :halign "end"
+      :tooltip "${wifi_name}"
+      (button :onclick "scripts/widget open wifi_manager" :onrightclick "scripts/wifi toggle":class "wifi-icon" wifi-icon)))
+
+(defwindow wifi_manager
+  :monitor 0
+  :geometry (geometry :x "1%"
+                      :y "10px"
+                      :width "270px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :exclusive false
+  (eventbox :onhoverlost "scripts/widget close wifi_manager" (WifiManager))
+)
+
+(defpoll wifi_list :initial "[]" :interval "5s" "scripts/wifi list-details")
+(defwidget WifiManager []
+  (box :orientation "v"
+      :halign "center"
+      :valign "start"
+      :class "manager"
+      (scroll :hscroll false :vscroll true :height "30"
+        (box :space-evenly false
+            :orientation "v"
+            :spacing 10
+            (for wifi in wifi_list
+              (button :onclick "scripts/wifi connect '${wifi.name}'"
+                      :class {wifi.active == "true" ? "active": ""} 
+                      {wifi.name})
+            )
+        )
+      )
+  )
+)
+
+
+;; Bluetooth ---------------------------------------------------
+
+(defpoll bluetooth_icon :interval "5s" "scripts/bluetooth icon")
+(defwidget Bluetooth []
+(box :orientation "h"
+      :halign "end"
+      (button :onclick "scripts/widget open bluetooth_manager" :onrightclick "scripts/bluetooth toggle" :class "bluetooth-icon" bluetooth_icon)))
+
+(defwindow bluetooth_manager
+  :monitor 0
+  :geometry (geometry :x "1%"
+                      :y "10px"
+                      :width "270px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :exclusive false
+  (eventbox :onhoverlost "scripts/widget close bluetooth_manager" (BluetoothManager))
+)
+
+(defpoll bluetooth_devices :initial "[]" :interval "5s" "scripts/bluetooth list-devices Paired")
+(defwidget BluetoothManager []
+  (box :orientation "v"
+      :halign "center"
+      :valign "start"
+      :class "manager"
+      (scroll :hscroll false :vscroll true :height "30"
+        (box :space-evenly false
+            :orientation "v"
+            :spacing 10
+            (for device in bluetooth_devices
+              (button :onclick "scripts/bluetooth connect '${device.id}'" 
+                      :onrightclick "scripts/bluetooth disconnect '${device.id}'" 
+                      :class {device.active == "true" ? "active": ""} 
+                      {device.name})
+            )
+        )
+      )
+  )
+)
+
+;; Powermenu ------------------------------------------------------
+
+(defwidget PowerButton []
+(box :orientation "h"
+      :halign "end"
+      (button :onclick "scripts/widget open powermenu" :class "powerbutton-icon" "⏻")))
+
+(defwindow powermenu
+  :monitor 0
+  :geometry (geometry :x "1%"
+                      :y "10px"
+                      :width "50px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :exclusive false
+  (eventbox :onhoverlost "scripts/widget close powermenu" (Powermenu))
+)
+
+(defwidget Powermenu []
+  (box :orientation "v"
+      :halign "center"
+      :valign "start"
+      :class "powermenu"
+      :spacing 20
+      (button :onrightclick "shutdown now" :class "poweroff-icon" "⏻")
+      (button :onrightclick "reboot" :class "reboot-icon" "⏼")
+  )
+)

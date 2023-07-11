@@ -1,0 +1,93 @@
+#!/bin/sh
+
+status() {
+    echo "$(cat /sys/class/net/w*/operstate)"
+}
+
+icon() {
+    [ `status` = down ] && echo "󰤮" && exit
+    signal=`signal`
+    icon=""
+    if [ $signal -gt "80" ]; then
+        echo "󰤨" && exit
+    elif [ $signal -gt "60" ]; then
+        echo "󰤥" && exit
+    elif [ $signal -gt "40" ]; then
+        echo "󰤢" && exit
+    else
+        echo "󰤟" && exit
+    fi
+}
+
+name() {
+    [ `status` = down ] && exit
+    nmcli -f NAME connection show --active | sed -n '2p'
+}
+
+signal() {
+    nmcli -f SIGNAL,SSID device wifi | grep "$(name)" | cut -d " " -f1
+}
+
+list() {
+    echo "$(nmcli -t -f NAME,TYPE connection | grep '802-11-wireless' | cut -d ':' -f1 | jq -nR '[inputs | select(length>0)]')"
+}
+
+list_details() {
+    wifi_list=( "$(nmcli -t -f NAME,TYPE connection | grep '802-11-wireless' | cut -d ':' -f1)" )
+    len=`printf "%s\n" "${wifi_list}" | wc -l`
+    
+    if [[ $len == "1" && `status` != "down" ]]; then
+        echo "[{\"name\": \"$wifi_list\", \"active\": \"true\"}]"
+        exit
+    elif [ $len -eq "1" ]; then
+        echo "[{\"name\": \"$wifi_list\", \"active\": \"false\"}]"
+        exit
+    fi
+
+    mod_list=('[')
+    i=1
+    while IFS= read -r line; do
+        if [[ $i == "1" && `status` != "down" ]]; then
+            mod_list+=("{\"name\": \"$line\", \"active\": \"true\"},")
+        elif [ $i -eq $len ]; then
+            mod_list+=("{\"name\": \"$line\", \"active\": \"false\"}")
+        else
+            mod_list+=("{\"name\": \"$line\", \"active\": \"false\"},")
+        fi
+        let "i=i+1"
+    done <<< "$wifi_list"
+    mod_list+=(']')
+    
+    printf "%s\n" "${mod_list[@]}"
+}
+
+connect() {
+    if [ `status` = down ]; then
+        enable_wifi
+    fi
+    nmcli dev wifi connect "$1"
+}
+
+enable_wifi() {
+    nmcli radio wifi on
+}
+
+disable_wifi() {
+    nmcli radio wifi off
+}
+
+toggle() {
+    if [ `status` = down ]; then
+        enable_wifi
+    else 
+        disable_wifi
+    fi
+}
+
+[ "$1" = "icon" ] && icon && exit
+[ "$1" = "name" ] && name && exit
+[ "$1" = "signal" ] && signal && exit
+[ "$1" = "list" ] && list && exit
+[ "$1" = "list-details" ] && list_details && exit
+[ "$1" = "connect" ] && connect "$2" && exit
+[ "$1" = "toggle" ] && toggle && exit

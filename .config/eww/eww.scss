@@ -1,0 +1,205 @@
+* {
+    all: unset;
+}
+
+$accent-color: rgb(106, 14, 69);
+$secondary-color: rgba(19, 8, 120, 0.456);
+$bg-color: rgb(5, 2, 14);
+$text-color: rgb(251, 247, 251);
+
+$calendar-bg: $bg-color;
+$calendar-current-month-days-color: rgb(200, 208, 254);
+$calendar-current-day-color: rgb(210, 0, 105);
+$calendar-header-color: rgb(0, 123, 245);
+$calendar-button-color: $calendar-header-color;
+$calendar-header-week-names-color: rgb(161, 16, 81);
+$calendar-other-days-color: rgb(184, 187, 189);
+$calendar-font: Fira Code;
+$calendar-header-font: Fira Code Medium;
+
+// bar --------------------------------------
+.bar {
+    background-color: $bg-color;
+    color: $text-color;
+    border-radius: 32px;
+    padding: 10px;
+    font-size: 16px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.time {
+    font-weight: bold;
+}
+
+.workspace-entry {
+    border-radius: 40px;
+}
+
+.occupied {
+    background-color: $secondary-color;
+}
+
+.current {
+    background-color: $accent-color;
+}
+
+.battery-icon {
+    font-size: 1.25em;
+}
+
+.bluetooth-icon {
+    font-size: 1.2em;
+}
+
+.wifi-icon {
+    font-size: 1.17em;
+}
+
+.powerbutton-icon {
+    margin-left: 40px;
+    font-size: 1.1em;
+}
+
+.poweroff-icon {
+    color: rgb(219, 4, 4);
+    font-size: 2.2em;
+}
+
+.reboot-icon {
+    color: rgb(255, 136, 40);
+    font-size: 2.2em;
+}
+
+.battery-low {
+    color: rgb(240, 9, 9);
+}
+
+.battery-charging {
+    color: rgb(10, 217, 41);
+}
+
+.volume scale trough highlight {
+    background-color: $accent-color;
+    color: #000000;
+    border-radius: 10px;
+}
+
+.volume scale trough {
+    background-color: rgb(44, 46, 59);
+    border-radius: 60px;
+    min-height: 8px;
+    min-width: 60px;
+    margin-left: 5px;
+    margin-right: 5px;
+}
+
+.volume-icon {
+    font-size: 1.25em;
+}
+
+.brightness scale trough highlight {
+    background-color: $accent-color;
+    color: #000000;
+    border-radius: 10px;
+}
+
+.brightness scale trough {
+    background-color: rgb(44, 46, 59);
+    border-radius: 60px;
+    min-height: 8px;
+    min-width: 60px;
+    margin-left: 5px;
+    margin-right: 10px;
+}
+
+.brightness-icon {
+    font-size: 1.1em;
+}
+
+.calendar {
+    background-color: $bg-color;
+    border-radius: 8px;
+}
+
+
+// Calendar ------------------------------------
+.cal {
+  background-color: $calendar-bg;
+  font-family: $calendar-font;
+  font-size: 18px;
+  border-radius: 20px;
+
+.cal-in {
+    padding: 10px 10px 0px 10px;
+
+    .cal {
+        padding: 5px 5px 5px 5px;
+        margin-left: 10px;
+    }
+  }
+}
+
+calendar {
+    color: $calendar-current-month-days-color;
+}
+calendar:selected {
+  color: $calendar-current-day-color;
+}
+
+calendar.header {
+color: $calendar-header-color;
+font-family: $calendar-header-font;
+}
+
+calendar.button {
+color: $calendar-button-color;
+}
+
+calendar.highlight {
+color: $calendar-header-week-names-color;
+}
+
+calendar:indeterminate {
+color: $calendar-other-days-color;
+}
+
+
+
+// dashboard ---------------------------
+
+.dashboard {
+    background-color: $bg-color;
+    color: $text-color;
+    // border-radius: 32px;
+    // padding: 10px;
+    // font-size: 16px;
+    // min-height: 300px;
+}
+
+
+// manager -------------------------
+
+.manager {
+    background-color: $bg-color;
+    font-family: $calendar-font;
+    font-size: 13px;
+    padding: 10px 10px 10px 10px;
+    border-radius: 20px;
+    min-width: 250px;
+    min-height: 100px;
+
+    .active {
+        font-weight: bold;
+        color: rgb(0, 242, 16);
+    }
+}
+
+// powermenu -------------------------
+
+.powermenu {
+    background-color: $bg-color;
+    font-size: 13px;
+    padding: 10px 10px 10px 10px;
+    border-radius: 20px;
+}

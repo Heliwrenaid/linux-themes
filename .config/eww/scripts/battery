@@ -1,0 +1,41 @@
+#!/bin/sh
+
+bat=/sys/class/power_supply/BAT0/
+per="$(cat "$bat/capacity")"
+status="$(cat "$bat/status")"
+
+icon() {
+	[ "$status" = Charging ] && echo "⚡" && exit
+
+	if [ "$per" -gt "90" ]; then
+		icon=""
+	elif [ "$per" -gt "75" ]; then
+		icon=""
+	elif [ "$per" -gt "50" ]; then
+		icon=""
+	elif [ "$per" -gt "25" ]; then
+		icon=""
+	elif [ "$per" -gt "10" ]; then
+		icon=""
+	elif [ "$per" -gt "0" ]; then
+		icon=""
+		notify-send -u critical "Battery Low" "Connect Charger"
+	else
+		echo "" && exit
+	fi
+
+	echo "$icon"
+}
+
+percent() {
+	echo $per
+}
+
+status() {
+	echo $status
+}
+
+[ "$1" = "icon" ] && icon && exit
+[ "$1" = "percentage" ] && percent && exit
+[ "$1" = "status" ] && status && exit
+exit

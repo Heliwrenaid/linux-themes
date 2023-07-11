@@ -1,0 +1,39 @@
+#!/bin/bash
+
+up() {
+    amixer set Master "${1}%+" &> /dev/null
+}
+
+down() {
+    amixer set Master "${1}%-" &> /dev/null
+}
+
+toggle_mute() {
+    amixer set Master toggle &> /dev/null
+}
+
+get() {
+    echo $(amixer sget Master | awk -F"[][]" '/Left:/ { print $2 }' | tr -d '%' | head -1)
+}
+
+status() {
+    if [ "$(amixer sget Master | awk '{ print $6 }' | tail -1 | grep -o off)" = "off" ]; then
+        echo off && exit
+    fi
+    echo on
+}
+
+icon() {
+    if [ `status` = "off" ]; then
+        echo "󰖁" && exit
+    fi
+    echo "󰕾"
+}
+
+
+[ "$1" = "get" ] && get && exit
+[ "$1" = "up" ] && up "$2" && exit
+[ "$1" = "down" ] && down "$2" && exit
+[ "$1" = "toggle" ] && toggle_mute && exit
+[ "$1" = "status" ] && status && exit
+[ "$1" = "icon" ] && icon && exit

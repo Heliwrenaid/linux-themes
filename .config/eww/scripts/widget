@@ -1,0 +1,14 @@
+#!/bin/bash
+
+EWW='eww'
+
+open() {
+    "$EWW" open $1
+}
+
+close() {
+    "$EWW" close $1
+}
+
+[ "$1" = "open" ] && open "$2" && exit
+[ "$1" = "close" ] && close "$2" && exit
