@@ -38,4 +38,3 @@ status() {
 [ "$1" = "icon" ] && icon && exit
 [ "$1" = "percentage" ] && percent && exit
 [ "$1" = "status" ] && status && exit
-exit
