@@ -3,7 +3,7 @@
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 BACKUP_FILEPATH="$HOME/theme-manager-dotfiles-copy.tar.gz"
 CONFIG_DIR="$HOME/.config"
-ALL_DIRS=(eww hypr rofi scripts dunst)
+ALL_DIRS=(eww hypr rofi scripts dunst kitty)
 
 install() {
     mkdir -p "$CONFIG_DIR"
