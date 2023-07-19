@@ -4,6 +4,8 @@ SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 CONFIG_DIR="$HOME/.config"
 ALL_DIRS=(eww hypr rofi scripts dunst kitty)
 
+THEMES_DIR="$SCRIPT_DIR/themes"
+
 THEME_MANAGER_DIR="$HOME/.theme-manager"
 BACKUP_FILENAME="$THEME_MANAGER_DIR/dotfiles-copy"
 
@@ -55,10 +57,26 @@ create_backup() {
     fi
 }
 
+select_theme() {
+    declare -a themes=`ls $THEMES_DIR`
+
+    PS3="Select theme: "
+    select theme in $themes; do
+        if [ -z $theme ]; then
+            PS3="Invalid option $REPLY. Enter proper theme index: "
+        else 
+            break
+        fi
+    done
+
+    echo $theme
+}
+
 install() {
+    theme_dir="$THEMES_DIR/$(select_theme)"
     create_backup
     rm -rf ${ALL_DIRS[@]}
-    cd "$SCRIPT_DIR/.config"
+    cd "$theme_dir"
     stow . -t "$CONFIG_DIR"
     if [ $? -eq 0 ]; then
         echo "Successfuly installed theme"
@@ -68,7 +86,7 @@ install() {
     fi
 }
 
-rollback() {
+restore_backup() {
     declare -i last_version=`get_last_backup_version`
     if [ $last_version -eq 0 ]; then
         echo "Operation failed. There is no backups in: $THEME_MANAGER_DIR"
@@ -96,14 +114,24 @@ rollback() {
     fi
 }
 
+delete_backups() {
+    read -p "Do you want to delete all backups? [yes/no]: " input
+    if [ "$input" = "yes" ]; then
+        rm -rf $THEME_MANAGER_DIR
+    else 
+        echo "Operation aborted" && exit 0
+    fi
+}
+
 mkdir -p "$CONFIG_DIR"
 mkdir -p "$THEME_MANAGER_DIR"
 
 case "$1" in
     install) install ;;
-    rollback) rollback ;;
-    delete-backups) rm -rf $THEME_MANAGER_DIR ;;
+    restore-backup) restore_backup ;;
+    list-themes) ls $THEMES_DIR;;
+    delete-backups) delete_backups ;;
     create-backup) create_backup ;;
     list-backups) ls -l $THEME_MANAGER_DIR | grep .tar.gz | cut -d " " -f6-9 ;;
-    *) echo "Use one of commands: install, rollback, create-backup, delete-backups, list-backups" && exit 0 ;;
+    *) echo "Use one of commands: install, restore, list-themes, create-backup, list-backups, delete-backups" && exit 0 ;;
 esac
