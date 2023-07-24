@@ -6,6 +6,7 @@
 - Launcher: rofi
 - Notification daemon: dunst
 - Wallpaper daemon: swww
+- Screenlock: swaylock
 
 ## Screenshots
 ![Statusbar](./screenshots/screen1.png)
@@ -38,3 +39,18 @@ Installation steps will be added in the future.
 ### Other
 
 Hyprland is [unofficialy supported](https://wiki.hyprland.org/Getting-Started/Installation/#packages) in other distros. After configuring hyprland you need to install equivalent packages (but names can vary).
+
+### Additional keybindings
+
+In addition to the Hyprland's default keybindings, the following have been added:
+
+- `SUPER + A` - rofi (drun)
+- `SUPER + S` - rofi (filebrowser)
+- `SUPER + D` - rofi (run)
+- `SUPER + R` - open firefox
+- `SUPER + E` - open nautilus
+- `SUPER + L` - screenlock
+- `SUPER + I` - changing wallpaper dynamically with random effect [(preview)](./screenshots/changing_wallpaper_using_swww.mkv)
+- `Print` - screenshot
+- `Audio keys (volume up/down, mute)`
+- `Brightness keys`

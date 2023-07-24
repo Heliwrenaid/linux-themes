@@ -1,17 +1,19 @@
 #!/bin/bash
 
 set_random_wall() {
-	find "$1" \
-		| while read -r img; do
-			echo "$((RANDOM % 1000)):$img"
-		done \
-		| sort -n | cut -d':' -f2- \
-		| while read -r img; do
-			swww img "$img"
-		done
+	ls "$1" | sort -R | tail -$N | while read image; do
+		if [ ! `get_actual_wallpaper` = "$image" ]; then
+			swww img "${1%/}/$image"
+			break
+		fi
+	done
 }
 
-if [[ $# -lt 1 ]] || [[ ! -d $1   ]]; then
+get_actual_wallpaper() {
+	echo `swww query | cut -d ',' -f3 | cut -d ':' -f3 | head -n 1 | tr -d ' " '`
+}
+
+if [[ $# -lt 1 ]] || [[ ! -d $1 ]]; then
 	echo "Usage:
 	$0 <dir containg images>"
 	exit 1
@@ -30,9 +32,9 @@ if [ "$2" = "change" ]; then
 fi
 
 # This controls (in seconds) when to switch to the next image
-INTERVAL=30
+interval=30
 
 while true; do
 	set_random_wall "$1"
-	sleep $INTERVAL
+	sleep $interval
 done
