@@ -79,11 +79,23 @@ install() {
     cd "$theme_dir"
     stow . -t "$CONFIG_DIR"
     if [ $? -eq 0 ]; then
-        echo "Successfuly installed theme"
+        post_install "$theme_dir"
+        if [ $? -eq 0 ]; then
+            echo "Successfuly installed theme"
+        else
+            echo "Partially installed. Post installation script error occurred."
+            exit 1
+        fi
     else
         echo "Operation failed. Cannot create symlinks"
         exit 1
     fi
+}
+
+post_install() {
+    script="$1/post-install.sh"
+    chmod a+x "$script"
+    . "$script" $CONFIG_DIR
 }
 
 restore_backup() {
