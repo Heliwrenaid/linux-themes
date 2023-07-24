@@ -1,6 +1,6 @@
 ## About
 
-Just a repo containing collection of my Hyprland themes. 
+Just a repo containing collection of my Linux rices. 
 Currently only one [theme](themes/my-first-theme/README.md) is available. 
 
 
@@ -24,6 +24,7 @@ $ ./theme-manager.sh <COMMAND>
 
 Available commands are: 
 - list-themes
+- install
 - restore-backup
 - create-backup
 - list-backups

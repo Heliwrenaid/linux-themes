@@ -8,7 +8,9 @@
 - Wallpaper daemon: swww
 
 ## Screenshots
-
+![Statusbar](./screenshots/screen1.png)
+![Rofi, dunst](./screenshots/screen2.png)
+![Kitty, spotify-tui](./screenshots/screen3.png)
 
 ## Requirements
 
