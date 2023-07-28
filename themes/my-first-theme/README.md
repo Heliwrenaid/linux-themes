@@ -13,6 +13,10 @@
 ![Rofi, dunst](./screenshots/screen2.png)
 ![Kitty, spotify-tui](./screenshots/screen3.png)
 
+
+https://github.com/Heliwrenaid/linux-rices/assets/69712720/f7e9788b-5b9a-4d1e-bc10-14aa80634ce9
+
+
 ## Requirements
 
 In order to run configuration properly install following packages:
@@ -66,7 +70,7 @@ In addition to the Hyprland's default keybindings, the following have been added
 - `SUPER + R` - open firefox
 - `SUPER + E` - open nautilus
 - `SUPER + L` - screenlock
-- `SUPER + I` - changing wallpaper dynamically with random effect [(preview)](./screenshots/changing_wallpaper_using_swww.mkv)
+- `SUPER + I` - changing wallpaper dynamically with random effect
 - `Print` - screenshot
 - `Audio keys (volume up/down, mute)`
 - `Brightness keys`
