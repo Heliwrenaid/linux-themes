@@ -40,7 +40,23 @@ Installation steps will be added in the future.
 
 Hyprland is [unofficialy supported](https://wiki.hyprland.org/Getting-Started/Installation/#packages) in other distros. After configuring hyprland you need to install equivalent packages (but names can vary).
 
-### Additional keybindings
+## User specific configuration
+Provided configuration works with default monitor. You can configure multiple monitors following official [wiki](https://wiki.hyprland.org/Configuring/Monitors/).
+
+To enable automatic wallpaper changing uncomment below line in [hyprland.conf](./hypr/hyprland.conf) and replace `<PATH TO DIR>` with directory containing ONLY images:
+
+```
+exec-once=~/.config/scripts/swww_randomize.sh <PATH TO DIR> &> /dev/null &
+```
+
+If you want to change wallpaper using `SUPER + I` adjust also `<PATH TO DIR>` in the following line in [hyprland.conf](./hypr/hyprland.conf):
+
+```
+bind = $mainMod, I, exec, ~/.config/scripts/swww_randomize.sh <PATH TO DIR> change &> /dev/null
+```
+
+
+## Extra keybindings
 
 In addition to the Hyprland's default keybindings, the following have been added:
 
