@@ -1,6 +1,6 @@
 ## About
 
-Just a repo containing collection of my Linux rices. 
+Just a repo containing collection of my Linux themes. 
 Currently only one [theme](themes/my-first-theme/README.md) is available. 
 
 

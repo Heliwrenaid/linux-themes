@@ -14,7 +14,9 @@
 ![Kitty, spotify-tui](./screenshots/screen3.png)
 
 
-https://github.com/Heliwrenaid/linux-rices/assets/69712720/f7e9788b-5b9a-4d1e-bc10-14aa80634ce9
+https://github.com/Heliwrenaid/linux-rices/assets/69712720/d862a828-e2c8-4732-aafe-b935cfb806a9
+
+
 
 
 ## Requirements
