@@ -37,6 +37,10 @@ Other packages:
 $ sudo pacman -S stow dunst kitty grim slurp swayidle swaylock bluez bluez-utils python socat jq alsa-utils pipewire wireplumber polkit-kde-agent networkmanager ttf-nerd-fonts-symbols-common ttf-fira-code
 ```
 
+```sh
+$ yay -S rofi-lbonn-wayland-git
+```
+
 And compile needed stuff from source: [eww (wayland)](https://github.com/elkowar/eww), [swww](https://github.com/Horus645/swww)
 
 ### NixOS
