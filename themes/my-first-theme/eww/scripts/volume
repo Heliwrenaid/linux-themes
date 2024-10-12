@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 up() {
     amixer set Master "${1}%+" &> /dev/null

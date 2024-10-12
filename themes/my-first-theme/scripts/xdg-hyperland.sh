@@ -1,8 +1,8 @@
-#!/bin/bash
-sleep 1
-killall -e xdg-desktop-portal-hyprland
-killall -e xdg-desktop-portal-wlr
-killall xdg-desktop-portal
-/usr/lib/xdg-desktop-portal-hyprland &
-sleep 2
-/usr/lib/xdg-desktop-portal &
+#!/bin/sh
+# sleep 1
+# killall -q xdg-desktop-portal-hyprland
+# killall -q xdg-desktop-portal-wlr
+# killall xdg-desktop-portal
+/nix/store/$(ls -la /nix/store | grep xdg-desktop-portal-hyprland | grep '^d' | awk '{print $9}')/libexec/xdg-desktop-portal-hyprland  &
+# sleep 2
+# /usr/lib/xdg-desktop-portal &

@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 spaces (){
 	WORKSPACE_WINDOWS=$(hyprctl workspaces -j | jq 'map({key: .id | tostring, value: .windows}) | from_entries')

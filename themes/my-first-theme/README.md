@@ -22,7 +22,17 @@ https://github.com/Heliwrenaid/linux-themes/assets/69712720/efda88dd-82ed-4a7a-8
 
 ## Requirements
 
-In order to run configuration properly install following packages:
+1. Install NerdFonstSymbolsOnly font:
+
+```sh
+$ mkdir -p ~/.local/share/fonts
+$ cd ~/.local/share/fonts
+$ curl -OL https://github.com/ryanoasis/nerd-fonts/releases/latest/download/NerdFontsSymbolsOnly.tar.xz
+$ tar xf NerdFontsSymbolsOnly.tar.xz
+$ fc-cache -f -v
+```
+
+2. Install packages described below.
 
 ### Arch Linux
 

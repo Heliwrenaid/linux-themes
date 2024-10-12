@@ -41,7 +41,7 @@
 (defwidget Battery []
   (box :orientation "h"
        (box
-          (box :class "battery-icon" battery-icon)
+          (button :onclick "scripts/widget open power_profile_manager" :class "battery-icon" battery-icon)
           (box :class {battery-status == "Charging" ? "battery-charging" : battery-percentage <= 10 ? "battery-low" : ""} 
               "${battery-percentage}%"))))
 
@@ -246,5 +246,39 @@
       :spacing 20
       (button :onrightclick "shutdown now" :class "poweroff-icon" "⏻")
       (button :onrightclick "reboot" :class "reboot-icon" "⏼")
+  )
+)
+
+;; Power profiles ------------------------------------------------------
+
+(defwindow power_profile_manager
+  :monitor 0
+  :geometry (geometry :x "1%"
+                      :y "10px"
+                      :width "270px"
+                      :anchor "top right")
+  :stacking "overlay"
+  :exclusive false
+  (eventbox :onhoverlost "scripts/widget close power_profile_manager" (PowerProfileManager))
+)
+
+(defvar power_profiles "[{ \"displayName\": \"Performance\", \"icon\": \"󰓅\", \"name\": \"performance\" }, { \"displayName\": \"Balanced\", \"icon\": \"󰾅\", \"name\": \"balanced\" }, { \"displayName\": \"Power saver\", \"icon\": \"󰾆\", \"name\": \"power-saver\" }]")
+(defpoll active_profile :interval "5s" "scripts/power_profile get-profile")
+(defwidget PowerProfileManager []
+  (box :orientation "v"
+      :halign "center"
+      :valign "start"
+      :class "manager"
+      (scroll :hscroll false :vscroll true :height "30"
+        (box :space-evenly false
+            :orientation "v"
+            :spacing 10
+            (for profile in power_profiles
+              (button :onclick "scripts/power_profile set-profile '${profile.name}'" 
+                      :class {active_profile == profile.name ? "active": ""} 
+                      {profile.displayName})
+            )
+        )
+      )
   )
 )

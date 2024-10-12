@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 disable_bluetooth() {
     bluetoothctl power off

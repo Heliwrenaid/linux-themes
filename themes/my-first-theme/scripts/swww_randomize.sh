@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 set_random_wall() {
 	ls "$1" | sort -R | tail -$N | while read image; do

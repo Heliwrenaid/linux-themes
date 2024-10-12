@@ -1,0 +1,22 @@
+#!/bin/sh
+
+get_profile() {
+	echo `powerprofilesctl get`
+}
+
+set_profile() {
+	powerprofilesctl set $1
+}
+
+list() {
+	# see: powerprofilesctl list
+	performance='{ "displayName": "Performance", "icon": "󰓅", "name": "performance" }'
+	balanced='{ "displayName": "Balanced", "icon": "󰾅", "name": "balanced" }'
+	power_saver='{ "displayName": "Power saver", "icon": "󰾆", "name": "power-saver" }'
+	echo "[$performance, $balanced, $power_saver]"
+}
+
+
+[ "$1" = "get-profile" ] && get_profile && exit
+[ "$1" = "set-profile" ] && set_profile $2 && exit
+[ "$1" = "list" ] && list && exit

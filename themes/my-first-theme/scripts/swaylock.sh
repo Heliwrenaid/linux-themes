@@ -1,6 +1,7 @@
-#!/bin/bash
+#!/bin/sh
 
 swaylock \
+    -f \
     -e \
     -i ~/Pictures/Wallpapers/samurai.png \
     --indicator-radius 60 \

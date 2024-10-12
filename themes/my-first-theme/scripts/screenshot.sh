@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 cd ~/Pictures
 filepath="screenshot_$(date +'%Y-%m-%d')_$(echo $RANDOM$RANDOM).png"
 touch "$filepath"
