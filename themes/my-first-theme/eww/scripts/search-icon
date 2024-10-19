@@ -1,0 +1,19 @@
+#!/bin/sh
+
+icon_name="$1"
+
+find_icon() {
+    local icon=$1
+    IFS=':' read -ra dirs <<< "$XDG_DATA_DIRS"
+    for dir in "${dirs[@]}"; do
+        # find /etc/profiles/per-user/heliwrenaid/share -iname "firefox.*" | grep -E "16x16/.*/firefox"
+        icon_file=`find "$dir" -iname "${icon}.*" 2>/dev/null | grep -E "16x16/.*/${icon}" | head -n 1`
+        if [ $? -eq 0 -a ! -z "$icon_file" -a "$icon_file" != " " ]; then
+            echo $icon_file
+            return
+        fi
+  done
+}
+
+find_icon $icon_name
+

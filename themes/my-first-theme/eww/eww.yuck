@@ -105,15 +105,18 @@
 	(box :class "cal-in"
 	(calendar :class "cal"))))
 
-(deflisten workspaces :initial "[]" "bash scripts/get-workspaces")
-(deflisten current_workspace :initial "1" "bash scripts/get-active-workspace")
+(defpoll workspaces :interval "1s" "bash scripts/get-workspaces")
 (defwidget Workspaces [] 
   (box :halign "start" :spacing 15
-    (label :text "${workspaces}${current_workspace}" :visible false)
     (for workspace in workspaces
-      (eventbox :onclick "hyprctl dispatch workspace ${workspace.id}" :halign "center" :width 60
-        (box :class "workspace-entry ${workspace.id == current_workspace ? "current" : ""} ${workspace.windows > 0 ? "occupied" : ""}" 
+      (eventbox :onclick "hyprctl dispatch workspace ${workspace.workspace}" :halign "center" :width 60
+        (box :class "workspace-entry ${workspace.isActive ? "current" : "occupied"}"
           (label :text "${workspace.id}")
+          ; idk why but I can't do it using for loop...
+          (image :icon "${workspace.icons[0]}" :visible "${arraylength(workspace.icons) >= 1}" :width 16 :height 16)
+          (image :icon "${workspace.icons[1]}" :visible "${arraylength(workspace.icons) >= 2}" :width 16 :height 16)
+          (image :icon "${workspace.icons[2]}" :visible "${arraylength(workspace.icons) >= 3}" :width 16 :height 16)
+          (image :icon "${workspace.icons[3]}" :visible "${arraylength(workspace.icons) >= 4}" :width 16 :height 16)
         )
       )
     )

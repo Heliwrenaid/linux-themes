@@ -1,11 +1,34 @@
 #!/bin/sh
 
-spaces (){
-	WORKSPACE_WINDOWS=$(hyprctl workspaces -j | jq 'map({key: .id | tostring, value: .windows}) | from_entries')
-	seq 1 10 | jq --argjson windows "${WORKSPACE_WINDOWS}" --slurp -Mc 'map(tostring) | map({id: ., windows: ($windows[.]//0)})'
+declare -A icon_map=(
+  ["kitty"]="utilities-terminal"
+  ["code-url-handler"]="vscode"
+  # add more icons mappings
+)
+
+get_icon() {
+  local class="$1"
+  if [[ -n "${icon_map[$class]}" ]]; then
+    echo "${icon_map[$class]}"
+  else
+    echo "$class"
+  fi
 }
 
-spaces
-socat -u UNIX-CONNECT:/tmp/hypr/$HYPRLAND_INSTANCE_SIGNATURE/.socket2.sock - | while read -r line; do
-	spaces
-done
+active_workspaces=$(hyprctl monitors -j | jq -r '[.[] | .activeWorkspace.id]')
+
+results="["
+while read -r obj; do
+    class=$(echo "$obj" | jq -r '.class')
+    icon="$(get_icon $class)"
+    workspace_id=$(echo "$obj" | jq -r '.workspace.id')
+    is_active=$(echo "$active_workspaces" | jq -r --argjson id "$workspace_id" 'contains([$id])')
+
+    # Add "icon" and "isActive" field
+    transformed=$(echo "$obj" | jq --arg icon "$icon" --argjson isActive "$is_active" '. | .icon = $icon | .isActive = $isActive | {workspace: .workspace.name, icon: .icon, isActive: .isActive}')
+    results="$results$transformed,"
+done < <(hyprctl clients -j | jq -c '.[]')
+
+results="${results%,}]"
+
+echo "$results" | jq -c 'group_by(.workspace) | map({id: .[0].workspace, icons: map(.icon), isActive: .[0].isActive})'
